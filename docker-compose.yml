@@ -2,24 +2,53 @@ version: "3.6"
 services:
   beacon-validator:
     build:
-      context: ./build
+      context: proxy
       args:
-        UPSTREAM_VERSION: v25.4.0
+        NETWORK: gnosis
+    depends_on:
+      - beacon-chain
+      - validator
+  beacon-chain:
+    build:
+      context: beacon-chain
+      args:
+        UPSTREAM_VERSION: v25.9.2
+        STAKER_SCRIPTS_VERSION: v0.1.2
+        NETWORK: gnosis
+        P2P_PORT: 9706
+        DATA_DIR: /home/user/nimbus-eth2/build/data
+    environment:
+      LOG_TYPE: INFO
+      FEE_RECIPIENT_ADDRESS: ""
+      CHECKPOINT_SYNC_URL: ""
+      CORS: "*"
+      EXTRA_OPTS: ""
+    ports:
+      - 9706:9706/tcp
+      - 9706:9706/udp
+    volumes:
+      - nimbus-data:/home/user/nimbus-eth2/build/data
     restart: unless-stopped
     stop_grace_period: 1m
+  validator:
+    build:
+      context: validator
+      args:
+        UPSTREAM_VERSION: v25.9.2
+        STAKER_SCRIPTS_VERSION: v0.1.2
+        NETWORK: gnosis
+        DATA_DIR: /home/user/nimbus-eth2/build/data
     environment:
       LOG_TYPE: INFO
       GRAFFITI: validating_from_DAppNode
-      P2P_TCP_PORT: 9206
-      P2P_UDP_PORT: 9206
-      CHECKPOINT_SYNC_URL: ""
-      EXTRA_OPTS: ""
       FEE_RECIPIENT_ADDRESS: ""
-    ports:
-      - 9206:9206/tcp
-      - 9206:9206/udp
+      ENABLE_DOPPELGANGER: "true"
+      EXTRA_OPTS: ""
+      BACKUP_BEACON_NODES: ""
     volumes:
-      - nimbus-data:/home/user/nimbus-eth2/build/data
-    image: beacon-validator.nimbus-gnosis.dnp.dappnode.eth:0.1.0
+      - nimbus-validators-data:/home/user/nimbus-eth2/build/data
+    restart: unless-stopped
+    stop_grace_period: 1m
 volumes:
   nimbus-data: {}
+  nimbus-validators-data: {}

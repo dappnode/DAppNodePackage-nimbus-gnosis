@@ -1,18 +1,31 @@
 {
   "name": "nimbus-gnosis.dnp.dappnode.eth",
-  "version": "0.1.2",
-  "upstreamVersion": "v25.4.0",
-  "upstreamRepo": "status-im/nimbus-eth2",
-  "upstreamArg": "UPSTREAM_VERSION",
-  "architectures": ["linux/amd64"],
+  "version": "0.1.4",
+  "links": {
+    "ui": "http://brain.web3signer-gnosis.dappnode",
+    "homepage": "https://nimbus.team/",
+    "readme": "https://github.com/dappnode/DAppNodePackage-nimbus-generic",
+    "docs": "https://nimbus.guide"
+  },
+  "upstream": [
+    {
+      "repo": "status-im/nimbus-eth2",
+      "version": "v25.9.2",
+      "arg": "UPSTREAM_VERSION"
+    },
+    {
+      "repo": "dappnode/staker-package-scripts",
+      "version": "v0.1.2",
+      "arg": "STAKER_SCRIPTS_VERSION"
+    }
+  ],
+  "architectures": ["linux/amd64", "linux/arm64"],
   "shortDescription": "Nimbus ETH2.0 Beacon chain + validator",
   "description": "Nimbus is a client implementation that strives to be as lightweight as possible in terms of resources used. This allows it to perform well on embedded systems, resource-restricted devices -- including Raspberry Pis and mobile devices -- and multi-purpose servers.",
   "type": "service",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   "contributors": [
-    "pablo <pablo@dappnode.io> (https://github.com/pablomendezroyo)",
-    "marce <mgarciate@dappnode.io> (https://github.com/mgarciate)",
-    "filoozom <philippe.schommers@gnosis.pm> (https://github.com/filoozom)"
+    "pablo <pablo@dappnode.io> (https://github.com/pablomendezroyo)"
   ],
   "license": "GPL-3.0",
   "repository": {
@@ -22,28 +35,22 @@
   "bugs": {
     "url": "https://github.com/dappnode/DAppNodePackage-nimbus-gnosis/issues"
   },
-  "requirements": {
-    "minimumDappnodeVersion": "0.2.89"
-  },
-  "categories": ["Blockchain"],
-  "links": {
-    "ui": "http://brain.web3signer-gnosis.dappnode",
-    "homepage": "https://nimbus.team/",
-    "readme": "https://github.com/dappnode/DAppNodePackage-nimbus-gnosis",
-    "docs": "https://nimbus.guide"
-  },
+  "categories": ["Blockchain", "ETH2.0"],
   "chain": {
     "driver": "ethereum-beacon-chain",
-    "serviceName": "beacon-validator",
-    "portNumber": 4500
+    "serviceName": "beacon-chain",
+    "portNumber": 3500
   },
   "warnings": {
-    "onRemove": "Make sure your StakersUI does not have this client selected! Double check in the Stakers Tab in the left NavBar"
+    "onRemove": "Make sure your StakersUI does not have this client selected! Double check in the Stakers Tab in the left NavBar",
+    "onMajorUpdate": "This major update requires you to reconfigure your previous settings."
   },
-  "globalEnvs": [
-    {
-      "envs": ["EXECUTION_CLIENT_GNOSIS"],
-      "services": ["beacon-validator"]
-    }
-  ]
+  "requirements": {
+    "minimumDappnodeVersion": "0.3.11"
+  },
+  "optionalDependencies": {
+    "gnosis-erigon.dnp.dappnode.eth": ">=1.0.2",
+    "nethermind-xdai.dnp.dappnode.eth": ">=1.0.69",
+    "web3signer-gnosis.dnp.dappnode.eth": ">=1.0.14"
+  }
 }
